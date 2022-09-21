@@ -17,7 +17,7 @@ module.exports = {
     indent: ["error", 2],
     "linebreak-style": ["error", "unix"],
     quotes: ["error", "double"],
-    semi: ["error", "never"],
+    semi: 0,
     eqeqeq: "error",
     "no-trailing-spaces": "error",
     "object-curly-spacing": ["error", "always"],

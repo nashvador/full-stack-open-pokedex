@@ -38,6 +38,23 @@ jobs:
       - name: Deploy app
         if: ${{ github.event_name == 'push' }} && ${{ !contains(github.event.head_commit.message,'#skip')}}
         run: flyctl deploy --remote-only
+      - name: Notify discord of success
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ success() && github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
+        with:
+        severity: info
+        username: GitHub
+        avatarUrl: https://github.githubassets.com/images/modules/logos_page/Octocat.png
+        description: App deployed to https://black-firefly-7263.fly.dev/.
+        footer: It worked!
+        webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Notify discord of FAILED build
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ failure() }}
+        with:
+          severity: error
+          details: Build failed ${{ github.sha }}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
   tag_release:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-20.04
